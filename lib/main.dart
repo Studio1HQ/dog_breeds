@@ -7,9 +7,6 @@ Future<void> main() async {
     () => runApp(MeasureWidget(child: const MyApp())),
     config: const MeasureConfig(),
   );
-  // Future.delayed(const Duration(seconds: 2), () {
-  //   throw Exception('Test crash from Measure');
-  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -17,15 +14,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Dog Breed Explorer',
       theme: ThemeData(
         useMaterial3: true,
-        
+
         scaffoldBackgroundColor: const Color(0xFFFAFAF7),
       ),
       home: const DogBreedScreen(),
-      );
+    );
   }
 }

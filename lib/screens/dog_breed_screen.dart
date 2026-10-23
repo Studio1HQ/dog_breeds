@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../services/dog_api_service.dart';
@@ -56,6 +55,7 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
       debugPrint('Breed request failed: $error');
     }
   }
+  
 
   Future<void> _selectBreed(String? breed) async {
     if (breed == null) return;
@@ -70,10 +70,7 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
     });
 
     try {
-      final images = await _dogApiService.fetchBreedImages(
-        breed,
-        count: 12,
-      );
+      final images = await _dogApiService.fetchBreedImages(breed, count: 12);
 
       if (!mounted || requestId != _imageRequestId) return;
 
@@ -109,7 +106,26 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
           'Dog Breed Explorer',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Leave screen - lifecycle test',
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute<void>(
+                  builder: (_) => const Scaffold(
+                    body: Center(
+                      child: Text('You left the Dog Breed Explorer.'),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
+
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
@@ -172,9 +188,7 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
                   items: _breeds.map((breed) {
                     return DropdownMenuItem<String>(
                       value: breed,
-                      child: Text(
-                        breed[0].toUpperCase() + breed.substring(1),
-                      ),
+                      child: Text(breed[0].toUpperCase() + breed.substring(1)),
                     );
                   }).toList(),
                   onChanged: _selectBreed,
@@ -182,15 +196,12 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
 
               const SizedBox(height: 24),
 
-              if (_errorMessage != null)
-                _buildErrorCard(theme),
+              if (_errorMessage != null) _buildErrorCard(theme),
 
               if (_isLoadingImages)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 48),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: Center(child: CircularProgressIndicator()),
                 )
               else if (_images.isNotEmpty) ...[
                 Text(
@@ -208,15 +219,13 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
                 const SizedBox(height: 16),
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final crossAxisCount =
-                        constraints.maxWidth >= 700 ? 4 : 2;
+                    final crossAxisCount = constraints.maxWidth >= 700 ? 4 : 2;
 
                     return GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _images.length,
-                      gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
@@ -228,8 +237,7 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
                           child: Image.network(
                             _images[index],
                             fit: BoxFit.cover,
-                            loadingBuilder:
-                                (context, child, loadingProgress) {
+                            loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) {
                                 return child;
                               }
@@ -305,9 +313,7 @@ class _DogBreedScreenState extends State<DogBreedScreen> {
               Expanded(
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(
-                    color: theme.colorScheme.onErrorContainer,
-                  ),
+                  style: TextStyle(color: theme.colorScheme.onErrorContainer),
                 ),
               ),
             ],
